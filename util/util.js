@@ -2,6 +2,7 @@ import fs from "fs";
 import Jimp from "jimp";
 import path from 'path';
 import { fileURLToPath } from 'url';
+import axios from "axios";
 
 // filterImageFromURL
 // helper function to download, filter, and save the filtered image locally
@@ -13,9 +14,9 @@ import { fileURLToPath } from 'url';
 export async function filterImageFromURL(inputURL) {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log("url", inputURL)
-            const photo = await Jimp.read(inputURL);
-            console.log("photo", photo);
+            const response = await axios.get(inputURL, { responseType: 'arraybuffer' });
+            const buffer = Buffer.from(response.data, 'binary');
+            const photo = await Jimp.read(buffer);
             const __filename = fileURLToPath(import.meta.url);
             const __dirname = path.dirname(__filename);
 
